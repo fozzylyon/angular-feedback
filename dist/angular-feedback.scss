@@ -1,0 +1,31 @@
+feedback-widget {
+	.overlay {
+		position:fixed;
+		left: 0;
+		top: 0;
+		bottom: 0;
+		right: 0;
+		background-color: black;
+		-moz-opacity: 0.7; 
+		opacity: .70;
+		filter: alpha(opacity=70);
+		z-index: 1080;
+	}
+	.mod {
+		position: absolute;
+		left: 25%;
+		top: 20%;
+		padding: 25px;
+		z-index: 1081;
+	}
+	.feedback-launch { 
+		position: fixed; 
+		top: 40%; 
+		z-index: 999;
+		transform: translate(-28px) rotate(-90deg);
+		-webkit-transform: translate(-28px) rotate(-90deg); 
+		-moz-transform: translate(-28px) rotate(-90deg); 
+		-o-transform: translate(-28px) rotate(-90deg); 
+		filter: progid:DXImageTransform.Microsoft.BasicImage(rotation=3);
+	}
+}

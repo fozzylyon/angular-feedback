@@ -1,0 +1,20 @@
+{
+  "name": "angular-feedback",
+  "version": "1.0.0",
+  "homepage": "https://github.com/bglick/angular-feedback",
+  "authors": [
+    "Brian Glick <brian@brian-glick.com>"
+  ],
+  "main": [
+    "./dist/angular-feedback.js",
+    "./dist/angular-feedback.css"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ]
+}

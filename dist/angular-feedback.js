@@ -1,37 +1,53 @@
-(function() {
-  angular.module('$feedback.directives', []).directive('feedbackWidget', [
-    '$http', function($http) {
-      return {
-        restrict: 'E',
-        scope: {
-          url: '@',
-          thanksText: '@'
-        },
-        link: function(scope, element, attrs, controller) {
-          scope.feedback = {};
-          scope.viewMode = 'sm';
-          element.find('button.btn-feedback-submit').bind('click', function() {
-            $http.post(scope.url, {
-              feedback: scope.feedback
-            });
-            return scope.$apply(function() {
-              scope.feedback.comment = '';
-              if (scope.thanksText === void 0 || scope.thanksText.length === 0) {
-                scope.thanksText = 'Thanks for your feedback!';
-              }
-              scope.thanksMsg = true;
-              return scope.viewMode = 'sm';
-            });
-          });
-          return scope.$watch('viewMode', function(newValue, oldValue) {
-            if (newValue === 'lg') {
-              return element.find('textarea.txt-feedback-comment').focus();
-            }
-          });
-        },
-        template: "    <div ng-show='viewMode==\"lg\"' class='form-group'>      <label class='lbl-feedback-comment' for='feedbackComment'>Comment:</label>      <textarea class='form-control txt-feedback-comment' ng-model='feedback.comment' id='feedbackComment'/>      <button class='btn-feedback-submit btn btn-sm btn-primary' ng-disabled='!feedback.comment.length>0'>Submit</button>      <button class='btn-feedback-cancel btn btn-sm' ng-click='viewMode=\"sm\"'>Cancel</button>    </div>    <div class='div-feedback-toggle-off text-right'>      <div class='div-feedback-thanks-text' ng-show='thanksMsg==true'>{{thanksText}}</div>      <button ng-click='viewMode=\"lg\";thanksMsg=false' ng-show='viewMode==\"sm\"' class='btn btn-sm btn-feedback-toggle'>Feedback</button>    </div>"
-      };
-    }
-  ]);
+( function ( ) {
+	angular.module( 'angular-feedback', [ ] )
+		.directive( 'feedbackWidget', [ '$http', '$window',
+			function ( $http, $window ) {
+				return {
+					'restrict': 'E',
+					'scope': {
+						'url': '@',
+						'successMessage': '@'
+					},
 
-}).call(this);
+					'link': function ( scope, element, attrs, controller ) {
+						var window = angular.element( $window );
+						var size = element.find( '.mod' )[ 0 ].clientWidth / 2;
+
+						scope.feedback = {};
+						scope.open = false;
+
+						scope.submitFeedback = function ( ) {
+							$http.post( scope.url, {
+								'feedback': scope.feedback
+							} );
+						};
+
+						scope.close = function ( ) {
+							scope.feedback.comment = '';
+							scope.open = false;
+						};
+
+						window.bind( 'resize', function ( ) {
+							if ( scope.open ) {
+								element.find( '.mod' )
+									.css( 'left', window.outerWidth( ) / 2 - size + 'px' );
+								scope.$apply( );
+							}
+						} );
+
+						return scope.$watch( 'open', function ( newValue, oldValue ) {
+							if ( newValue ) {
+								element.find( '.mod' )
+									.css( 'left', window.outerWidth( ) / 2 - size + 'px' );
+
+								return element.find( 'textarea#feedbackInput' )
+									.focus( );
+							}
+						} );
+					},
+					'template': "<div>" + "<div class='overlay' ng-show='open'></div>" + "<div class='mod' ng-show='open'>" + "<div class='modal-dialog'>" + "<div class='modal-content'>" + "<div class='modal-header'>" + "<button type='button' class='close' ng-click='close()'>&times;</button>" + "<h4 class='modal-title'>Feedback</h4>" + "</div>" + "<div class='modal-body'>" + "<form name='feedback' role='form' class='form-horizontal' ng-model='feedback.comment' ng-submit='submitFeedback()''>" + "<div class='form-group'>" + "<label class='control-label sr-only' for='feedbackInput'>Feedback</label>" + "<textarea id='feedbackInput' class='form-control' row='3' ng-model='feedback.comment' placeholder='Leave any feedback'>" + "</textarea>" + "</div>" + "</div>" + "<div class='modal-footer'>" + "<button class='btn btn-primary' type='submit'>Submit</button>" + "<button class='btn btn-default' type='button' ng-click='close()'>Cancel</button>" + "</div>" + "</form>" + "</div>" + "</div>" + "</div>" + "<button ng-click='open=!open;' class='feedback-launch btn btn-success'>Feedback</button>" + "</div>"
+				};
+			}
+		] );
+} )
+	.call( this );
